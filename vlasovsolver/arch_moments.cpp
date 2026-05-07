@@ -756,23 +756,26 @@ void vamr_transfer_values(
 		          for (int j2=0; j2<2; ++j2) {
 		            for (int k2=0; k2<2; ++k2) {
 	        	      Realf summ=0;
-					  if( data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)]>cell->getVelocityBlockMinValue(popID+1)){
+					//  if( data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)]>cell->getVelocityBlockMinValue(popID+1)){
 			          Realf datasave= data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)];
 			          data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)]=0;
 			          for (int i3=0; i3<2; ++i3) {
 			            for (int j3=0; j3<2; ++j3) {
 			              for (int k3=0; k3<2; ++k3) {
-			                if(dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]>0){
+			              //  if(dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]>0){
+							 if(dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]>cell->getVelocityBlockMinValue(popID){
 				              data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)]+= dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]/8.0;
 				              summ+=1.0;
-			                }
+			                }else{
+								 dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]=datasave;
+							}
 			              }
 			            }
 			          }
 			          if (summ!=8.0){
 			            data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)]=datasave;
 			          }
-					}else{
+					/*}else{
 				     for (int i3=0; i3<2; ++i3) {
 				    	for (int j3=0; j3<2; ++j3) {
 				      	for (int k3=0; k3<2; ++k3) {
@@ -780,7 +783,8 @@ void vamr_transfer_values(
 				      	}
 				    	}
 				  	 }
-					  }
+					  }*/
+						
 		            };
 		          };
 		        };//loop over refined cells
