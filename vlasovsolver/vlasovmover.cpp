@@ -343,14 +343,6 @@ void calculateSpatialTranslation(
    }
 
    if (P::activateVamr){
-     for (uint popID=0; popID<getObjectWrapper().particleSpecies.size(); ++popID) {
-       if (getObjectWrapper().particleSpecies[popID].RefinementLevel<getObjectWrapper().particleSpecies[popID].MaxRefinementLevel){
-         for (size_t c=0; c<local_propagated_cells.size(); ++c) {
-	       SpatialCell* SC = mpiGrid[local_propagated_cells[c]];
-	       changeRefined(SC,popID);
-         }
-	   }
-	 }
      for (uint popID=(getObjectWrapper().particleSpecies.size()-1); popID>0; --popID) {
        //Transfert the info from popID to popID-1
        if(getObjectWrapper().particleSpecies[popID].RefinementLevel>0){
@@ -590,18 +582,7 @@ void calculateAcceleration(dccrg::Dccrg<SpatialCell,dccrg::Cartesian_Geometry>& 
       } // for-loop over particle species
    }
 
-   // Recalculate "_V" velocity moments
-   calculateMoments_V(mpiGrid,cells,true,(dt==0));
-
-     if (P::activateVamr){
-     for (uint popID=0; popID<getObjectWrapper().particleSpecies.size(); ++popID) {
-       if (getObjectWrapper().particleSpecies[popID].RefinementLevel<getObjectWrapper().particleSpecies[popID].MaxRefinementLevel){
-         for (size_t c=0; c<cells.size(); ++c) {
-	   SpatialCell* SC = mpiGrid[cells[c]];
-	   changeRefined(SC,popID);
-         }
-       }
-     }
+   if (P::activateVamr){
      for (uint popID=(getObjectWrapper().particleSpecies.size()-1); popID>0; --popID) {
        //Transfert the info from popID to popID-1
        if(getObjectWrapper().particleSpecies[popID].RefinementLevel>0){
@@ -609,7 +590,10 @@ void calculateAcceleration(dccrg::Dccrg<SpatialCell,dccrg::Cartesian_Geometry>& 
        }
      }
    }
-   
+
+   // Recalculate "_V" velocity moments
+   calculateMoments_V(mpiGrid,cells,true,(dt==0));
+	
    // Set CellParams::MAXVDT to be the minimum dt of all per-species values
    #pragma omp parallel for
    for (size_t c=0; c<cells.size(); ++c) {
