@@ -706,7 +706,8 @@ void vamr_transfer_values(
 #pragma omp parallel for schedule(dynamic,1)
   for (size_t c=0; c<cells.size(); ++c) {
     SpatialCell* cell = mpiGrid[cells[c]];
-
+	Real* minValue = cell->getVelocityBlockMinValue(popID); //0
+	  
 #ifdef USE_GPU
       vmesh::VelocityMesh* vmesh    = cell->dev_get_velocity_mesh(popID);
       vmesh::VelocityMesh* vmeshraf    = cell->get_velocity_mesh(popID+1);
@@ -762,8 +763,7 @@ void vamr_transfer_values(
 			          for (int i3=0; i3<2; ++i3) {
 			            for (int j3=0; j3<2; ++j3) {
 			              for (int k3=0; k3<2; ++k3) {
-			              //  if(dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]>0){
-							 if(dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]>cell->getVelocityBlockMinValue(popID){
+							 if(dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]>minValue){
 				              data[localID*WID3+cellIndex(2*i+i2,2*j+j2,2*k+k2)]+= dataraf[localIDraf*WID3+cellIndex(2*i2+i3,2*j2+j3,2*k2+k3)]/8.0;
 				              summ+=1.0;
 			                }else{
