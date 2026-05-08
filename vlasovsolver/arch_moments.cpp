@@ -706,7 +706,7 @@ void vamr_transfer_values(
 #pragma omp parallel for schedule(dynamic,1)
   for (size_t c=0; c<cells.size(); ++c) {
     SpatialCell* cell = mpiGrid[cells[c]];
-	Real* minValue = cell->getVelocityBlockMinValue(popID); //0
+	Realf minValue = cell->getVelocityBlockMinValue(popID); //0
 	  
 #ifdef USE_GPU
       vmesh::VelocityMesh* vmesh    = cell->dev_get_velocity_mesh(popID);
